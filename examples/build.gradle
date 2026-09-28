@@ -1,0 +1,44 @@
+import java.text.SimpleDateFormat
+
+plugins {
+    alias(libs.plugins.shadow)
+    id 'java'
+}
+
+ext.moduleName = 'TarsosDSP.examples'
+
+java {
+    // Examples are not published, so they are free to target a higher baseline.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "be.tarsos.dsp.example.TarsosDSPExampleRunner",
+                "Build-Version": project.version,
+                "Build-By" : System.properties['user.name'],
+                "Build-Date":  new SimpleDateFormat("yyyy-MM-dd").format(new Date()),
+                'Build-JDK' : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
+                'Build-OS'  : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
+        )
+    }
+}
+
+dependencies {
+    implementation libs.reflections
+
+    implementation(project(":core"))
+    implementation(project(":jvm"))
+}
+
+javadoc {
+    options.addStringOption("encoding", "UTF-8")
+}
+
